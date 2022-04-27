@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { TaskItemType } from '../Tasks/Tasks';
+import { TaskItemType } from '../../types/types';
 
 import Section from '../UI/Section';
 import TaskForm from './TaskForm';

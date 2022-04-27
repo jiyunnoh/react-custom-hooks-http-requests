@@ -1,19 +1,11 @@
 import React from 'react';
+import { TaskItemType, TaskType } from '../../types/types';
+
 import Section from '../UI/Section';
 import TaskItem from './TaskItem';
 import classes from './Tasks.module.css';
 
-export type TaskItemType = {
-  id: string,
-  text: string
-}
-
-const Tasks = (props: {
-  items: TaskItemType[];
-  error: string | null;
-  onFetch: React.MouseEventHandler<HTMLButtonElement> | undefined;
-  loading: any;
-}) => {
+const Tasks = (props: TaskType) => {
   let taskList = <h2>No tasks found. Start adding some!</h2>;
 
   if (props.items.length > 0) {

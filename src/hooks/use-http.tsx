@@ -1,42 +1,39 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { RequestConfigType } from "../types/types";
 
-type RequestConfigType = {
-    url: string,
-    method?: string,
-    headers?: HeadersInit,
-    body?: object
-}
-
-const useHttp = (requestConfig: RequestConfigType, applyData: (tasksObj: any) => void) => {
+const useHttp = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string>('');
-  
-    const sendRequest = async () => {
-      setIsLoading(true);
-      setError('');
-      try {
-        const response = await fetch(
-          requestConfig.url, {
-              method: requestConfig.method ? requestConfig.method : 'GET',
-              headers: requestConfig.headers ? requestConfig.headers : {},
-              body: requestConfig.body ? JSON.stringify(requestConfig.body) : null
-          }
-        );
-  
-        if (!response.ok) {
-          throw new Error('Request failed!');
+
+    const sendRequest = useCallback(async (
+        requestConfig: RequestConfigType,
+        applyData: (tasksObj: any) => void
+    ) => {
+        setIsLoading(true);
+        setError('');
+        try {
+            const response = await fetch(
+                requestConfig.url, {
+                method: requestConfig.method ? requestConfig.method : 'GET',
+                headers: requestConfig.headers ? requestConfig.headers : {},
+                body: requestConfig.body ? JSON.stringify(requestConfig.body) : null
+            }
+            );
+
+            if (!response.ok) {
+                throw new Error('Request failed!');
+            }
+
+            const data = await response.json();
+
+            applyData(data);
+        } catch (err) {
+            if (err instanceof Error) {
+                setError(err.message || 'Something went wrong!');
+            }
         }
-  
-        const data = await response.json();
-  
-        applyData(data);
-      } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message || 'Something went wrong!');
-        }
-      }
-      setIsLoading(false);
-    };
+        setIsLoading(false);
+    }, []);
 
     return {
         isLoading: isLoading,
